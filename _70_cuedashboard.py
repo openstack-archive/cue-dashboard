@@ -1,0 +1,4 @@
+DASHBOARD = 'cue'
+ADD_INSTALLED_APPS = ['cuedashboard']
+DEFAULT = True
+ADD_EXCEPTIONS = {}
