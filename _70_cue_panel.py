@@ -8,25 +8,10 @@
 #     with Hewlett-Packard.
 ###############################################################################
 
-# The name of the panel to be added to HORIZON_CONFIG. Required.
-# Should match devplatforminstaller.utils.const.PANEL
 PANEL = 'queues'
-
-# The name of the panel group the PANEL is associated with. Required.
-# Must match devplatforminstaller.utils.const.PANEL_GROUP
-PANEL_GROUP = 'queues'
-
-# The name of the dashboard the PANEL associated with. Required.
-# Must match devplatforminstaller.utils.const.PANEL_GROUP_DASHBOARD
+PANEL_GROUP = 'queuesgroup'
 PANEL_DASHBOARD = 'project'
-
-# Python panel class of the PANEL to be added.
 ADD_PANEL = 'cuedashboard.queues.panel.CuePanel'
-
-# Whether or not the panel is disabled.
-# DISABLED = False
-
-# Add the devplatforminstaller app into the list of applications to run.
 ADD_INSTALLED_APPS = [
     'cuedashboard',
 ]

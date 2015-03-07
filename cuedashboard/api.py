@@ -1,16 +1,20 @@
-# Copyright 2013 Rackspace Hosting.
+# Copyright 2014 Hewlett-Packard Development Company, L.P.
 #
-#    Licensed under the Apache License, Version 2.0 (the "License"); you may
-#    not use this file except in compliance with the License. You may obtain
-#    a copy of the License at
+# Authors: Steve Leon <kokhang@gmail.com>
 #
-#         http://www.apache.org/licenses/LICENSE-2.0
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
-#    Unless required by applicable law or agreed to in writing, software
-#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-#    License for the specific language governing permissions and limitations
-#    under the License.
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# Copyright [2014] Hewlett-Packard Development Company, L.P.
+# limitations under the License.
 
 import logging
 
@@ -37,5 +41,8 @@ def cueclient(request):
     return client.Client(session=session)
 
 
-def queue_list(request, marker=None):
+def clusters_list(request, marker=None):
+    return cueclient(request).clusters.list()
+
+def delete_cluster(request, marker=None):
     return cueclient(request).clusters.list()
