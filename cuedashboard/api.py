@@ -21,7 +21,6 @@ from keystoneclient.auth.identity import v2
 
 from openstack_dashboard.api import base
 
-from horizon.utils import functions as utils
 from horizon.utils.memoized import memoized  # noqa
 
 LOG = logging.getLogger(__name__)
@@ -30,14 +29,13 @@ LOG = logging.getLogger(__name__)
 @memoized
 def cueclient(request):
     cacert = getattr(settings, 'OPENSTACK_SSL_CACERT', None)
-    trove_url = base.url_for(request, 'message_queue')
-    auth = v2.Token(trove_url, request.user.token.id,
-                    tenant_id=request.user.project_id,
-                    username=request.user.username)
+    auth_url = base.url_for(request, 'identity')
+    auth = v2.Token(auth_url, request.user.token.id,
+                    tenant_id=request.user.tenant_id,
+                    tenant_name=request.user.tenant_name)
     session = ksc_session.Session(auth=auth, verify=cacert)
     return client.Client(session=session)
 
 
 def queue_list(request, marker=None):
-    page_size = utils.get_page_size(request)
-    return cueclient(request).clusters.list(limit=page_size, marker=marker)
+    return cueclient(request).clusters.list()

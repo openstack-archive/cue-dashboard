@@ -12,14 +12,14 @@
 # implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-from django.core import urlresolvers
-from django.utils import http
+import logging
 from django.utils.translation import ungettext_lazy
 from django.utils.translation import ugettext as _
 from horizon import tables
 from cuedashboard import api
 
+
+LOG = logging.getLogger(__name__)
 
 class CreateQueue(tables.LinkAction):
     name = "create"
@@ -54,31 +54,6 @@ class DeleteQueue(tables.BatchAction):
         api.trove.instance_delete(request, obj_id)
 
 
-class DeleteApplication(tables.BatchAction):
-    name = "delete"
-    verbose_name = _("Delete Application")
-    classes = ("btn-terminate", "btn-danger")
-
-    action_present = _("Delete")
-    action_past = _("Deleted")
-    data_type_singular = _("Application")
-    data_type_plural = _("Applications")
-
-    def allowed(self, request, template):
-        return True
-
-    def action(self, request, application_id):
-        solum = solumclient(request)
-        solum.plans.delete(plan_id=application_id)
-
-
-class ViewApplication(tables.LinkAction):
-    name = "view"
-    verbose_name = _("View")
-    url = "horizon:solum:applications:detail"
-    classes = ("btn-edit",)
-
-
 class QueuesTable(tables.DataTable):
     name = tables.Column("name",
                          verbose_name=_("Name"),
@@ -87,8 +62,13 @@ class QueuesTable(tables.DataTable):
     flavor = tables.Column("flavor", verbose_name=_("Flavor"),)
     status = tables.Column("status", verbose_name=_("Status"))
 
+    def get_object_id(self, datum):
+        LOG.info(type(datum))
+        LOG.info(dir(datum))
+        return None
+
     class Meta:
         name = "queues"
         verbose_name = _("Queues")
-        table_actions = (CreateQueue, DeleteQueue)
-        row_actions = DeleteQueue
+        table_actions = (CreateQueue, DeleteQueue,)
+        #row_actions = (DeleteQueue,)

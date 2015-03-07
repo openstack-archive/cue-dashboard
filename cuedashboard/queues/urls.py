@@ -13,17 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from django.utils.translation import ugettext as _
-
-import horizon
-
-import cuedashboard.dashboard
+from django.conf.urls import patterns
+from django.conf.urls import url
+from cuedashboard.queues import views
 
 
-class CuePanel(horizon.Panel):
-    name = _("Queues")
-    slug = 'queues'
-
-
-cuedashboard.dashboard.CuePanel.register(CuePanel)
-
+urlpatterns = patterns('',
+                       url(r'^$', views.IndexView.as_view(),
+                           name='index'),
+)

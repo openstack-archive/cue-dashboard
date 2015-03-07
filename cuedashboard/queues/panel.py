@@ -13,25 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from django.utils.translation import ugettext as _
-from horizon import tabs
-
-from cuedashboard import api
+from django.utils.translation import ugettext_lazy as _
+import horizon
 
 
-class GeneralTab(tabs.Tab):
-    name = _("General Info")
-    slug = "application_details_tab"
-    template_name = ("applications/_detail.html")
+class CuePanel(horizon.Panel):
+    name = _("Queues")
+    slug = 'queues'
+    permissions = ('openstack.services.queue',)
 
-    def get_context_data(self, request):
-        app_id = self.tab_group.kwargs['application_id']
-        solum = api(request)
-        plan = solum.plans.get(plan_id=app_id)
-        return {"application": plan}
-
-
-class AppDetailsTabs(tabs.TabGroup):
-    slug = "application_details"
-    tabs = (GeneralTab,)
-    sticky = True

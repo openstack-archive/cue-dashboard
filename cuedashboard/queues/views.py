@@ -13,18 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from horizon import tables
-from horizon import tabs
-from horizon import workflows
-
 from cuedashboard import api
-from cuedashboard.default import tables
+from cuedashboard.queues.tables import QueuesTable
+from horizon import tables
 
 
 class IndexView(tables.DataTableView):
-    table_class = tables.QueuesTable
-    template_name = 'applications/index.html'
+    table_class = QueuesTable
+    template_name = 'cuedashboard/queues/index.html'
 
     def get_data(self):
-        return api.queue_list()
-
+        return api.queue_list(self.request)
