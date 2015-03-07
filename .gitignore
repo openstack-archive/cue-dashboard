@@ -1,0 +1,9 @@
+vagrant/
+*.pyc
+*py*.egg
+AUTHORS
+ChangeLog
+.DS_Store
+cue_dashboard.egg*
+build/
+.idea/
