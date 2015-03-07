@@ -20,7 +20,7 @@ from horizon import tables
 
 class IndexView(tables.DataTableView):
     table_class = QueuesTable
-    template_name = 'cuedashboard/queues/index.html'
+    template_name = 'queues/index.html'
 
     def get_data(self):
         return api.queue_list(self.request)
