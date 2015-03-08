@@ -16,18 +16,14 @@
 # Copyright [2014] Hewlett-Packard Development Company, L.P.
 # limitations under the License.
 
-import logging
-
 from django.conf import settings
 from cueclient.v1 import client
 from keystoneclient import session as ksc_session
 from keystoneclient.auth.identity import v2
-
+from collections import namedtuple
 from openstack_dashboard.api import base
 
 from horizon.utils.memoized import memoized  # noqa
-
-LOG = logging.getLogger(__name__)
 
 
 @memoized
@@ -42,7 +38,16 @@ def cueclient(request):
 
 
 def clusters_list(request, marker=None):
-    return cueclient(request).clusters.list()
+    #todo
+    #This is needed because the cue client returns a dict
+    #instead of a cluster object.
+    clusters = []
+    clusters_dict = cueclient(request).clusters.list()
+    for cluster_dict in clusters_dict:
+        clusters.append(namedtuple('Cluster', cluster_dict)
+                        (**cluster_dict))
+    return clusters
 
-def delete_cluster(request, marker=None):
-    return cueclient(request).clusters.list()
+
+def delete_cluster(request, cluster_id):
+    return cueclient(request).clusters.delete(cluster_id)

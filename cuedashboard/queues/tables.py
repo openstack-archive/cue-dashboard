@@ -16,14 +16,10 @@
 # Copyright [2014] Hewlett-Packard Development Company, L.P.
 # limitations under the License.
 
-import logging
 from django.utils.translation import ungettext_lazy
 from django.utils.translation import ugettext as _
 from horizon import tables
 from cuedashboard import api
-
-
-LOG = logging.getLogger(__name__)
 
 
 class CreateQueue(tables.LinkAction):
@@ -56,7 +52,7 @@ class DeleteQueue(tables.BatchAction):
     icon = "off"
 
     def action(self, request, obj_id):
-        api.trove.instance_delete(request, obj_id)
+        api.delete_cluster(request, obj_id)
 
 
 class QueuesTable(tables.DataTable):
@@ -67,13 +63,8 @@ class QueuesTable(tables.DataTable):
     flavor = tables.Column("flavor", verbose_name=_("Flavor"),)
     status = tables.Column("status", verbose_name=_("Status"))
 
-    def get_object_id(self, datum):
-        LOG.info(type(datum))
-        LOG.info(dir(datum))
-        return None
-
     class Meta:
-        name = "queues"
-        verbose_name = _("Queues")
+        name = "clusters"
+        verbose_name = _("Clusters")
         table_actions = (CreateQueue, DeleteQueue,)
         row_actions = (DeleteQueue,)
