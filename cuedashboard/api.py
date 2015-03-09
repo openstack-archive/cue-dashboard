@@ -50,6 +50,11 @@ def cluster_get(request, cluster_id):
     return cluster
 
 
+def cluster_create(request, name, nic, flavor, size, volume_size):
+    return cueclient(request).clusters.create(name, nic,flavor,
+                                              size, volume_size)
+
+
 def delete_cluster(request, cluster_id):
     return cueclient(request).clusters.delete(cluster_id)
 

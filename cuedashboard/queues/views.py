@@ -16,15 +16,18 @@
 # Copyright [2014] Hewlett-Packard Development Company, L.P.
 # limitations under the License.
 
+import logging
+
 from cuedashboard import api
 from cuedashboard.queues.tables import ClusterTable
+from cuedashboard.queues.tabs import ClusterDetailTabs
+from cuedashboard.queues import workflows as cue_workflows
+from django.core.urlresolvers import reverse
+from django.utils.translation import ugettext_lazy as _
 from horizon import tables
 from horizon import tabs as horizon_tabs
 from horizon.utils import memoized
-from cuedashboard.queues.tabs import ClusterDetailTabs
-from django.core.urlresolvers import reverse
-from django.utils.translation import ugettext_lazy as _
-import logging
+from horizon import workflows
 
 
 LOG = logging.getLogger(__name__)
@@ -36,6 +39,12 @@ class IndexView(tables.DataTableView):
 
     def get_data(self):
         return api.clusters_list(self.request)
+
+
+class CreateClusterView(workflows.WorkflowView):
+    workflow_class = cue_workflows.CreateCluster
+    template_name = "queues/launch.html"
+    page_title = _("Create Cluster")
 
 
 class DetailView(horizon_tabs.TabbedTableView):
@@ -61,7 +70,6 @@ class DetailView(horizon_tabs.TabbedTableView):
         LOG.info(cluster)
         LOG.info(type(cluster))
         return cluster
-
 
 
     def get_tabs(self, request, *args, **kwargs):
