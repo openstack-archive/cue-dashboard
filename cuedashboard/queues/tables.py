@@ -22,28 +22,28 @@ from horizon import tables
 from cuedashboard import api
 
 
-class CreateQueue(tables.LinkAction):
+class CreateCluster(tables.LinkAction):
     name = "create"
     verbose_name = _("Create Cluster")
     url = "horizon:project:queues:create"
     classes = ("ajax-modal", "btn-create")
 
 
-class DeleteQueue(tables.BatchAction):
+class DeleteCluster(tables.BatchAction):
 
     @staticmethod
     def action_present(count):
         return ungettext_lazy(
-            u"Terminate Instance",
-            u"Terminate Instances",
+            u"Terminate Cluster",
+            u"Terminate Clusters",
             count
         )
 
     @staticmethod
     def action_past(count):
         return ungettext_lazy(
-            u"Scheduled deletion of Queue",
-            u"Scheduled deletion of Queues",
+            u"Scheduled deletion of Cluster",
+            u"Scheduled deletion of Clusters",
             count
         )
 
@@ -55,7 +55,7 @@ class DeleteQueue(tables.BatchAction):
         api.delete_cluster(request, obj_id)
 
 
-class QueuesTable(tables.DataTable):
+class ClusterTable(tables.DataTable):
     name = tables.Column("name",
                          verbose_name=_("Name"),
                          link='horizon:project:queues:detail')
@@ -66,5 +66,5 @@ class QueuesTable(tables.DataTable):
     class Meta:
         name = "clusters"
         verbose_name = _("Clusters")
-        table_actions = (CreateQueue, DeleteQueue,)
-        row_actions = (DeleteQueue,)
+        table_actions = (CreateCluster, DeleteCluster,)
+        row_actions = (DeleteCluster,)

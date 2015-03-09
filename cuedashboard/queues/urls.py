@@ -21,7 +21,10 @@ from django.conf.urls import url
 from cuedashboard.queues import views
 
 
+CLUSTERS = r'^(?P<cluster_id>[^/]+)/%s$'
+
 urlpatterns = patterns('',
                        url(r'^$', views.IndexView.as_view(),
                            name='index'),
+                       url(CLUSTERS % '', views.DetailView.as_view(), name='detail'),
 )

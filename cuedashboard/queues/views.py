@@ -17,13 +17,57 @@
 # limitations under the License.
 
 from cuedashboard import api
-from cuedashboard.queues.tables import QueuesTable
+from cuedashboard.queues.tables import ClusterTable
 from horizon import tables
+from horizon import tabs as horizon_tabs
+from horizon.utils import memoized
+from cuedashboard.queues.tabs import ClusterDetailTabs
+from django.core.urlresolvers import reverse
+from django.utils.translation import ugettext_lazy as _
+import logging
+
+
+LOG = logging.getLogger(__name__)
 
 
 class IndexView(tables.DataTableView):
-    table_class = QueuesTable
+    table_class = ClusterTable
     template_name = 'queues/index.html'
 
     def get_data(self):
         return api.clusters_list(self.request)
+
+
+class DetailView(horizon_tabs.TabbedTableView):
+    tab_group_class = ClusterDetailTabs
+    template_name = 'queues/detail.html'
+    page_title = _("Cluster Details: {{ cluster.name }}")
+
+    def get_context_data(self, **kwargs):
+        context = super(DetailView, self).get_context_data(**kwargs)
+        cluster = self.get_data()
+        table = ClusterTable(self.request)
+        context["cluster"] = cluster
+        context["url"] = self.get_redirect_url()
+        context["actions"] = table.render_row_actions(cluster)
+        return context
+
+    @memoized.memoized_method
+    def get_data(self):
+
+        cluster_id = self.kwargs['cluster_id']
+        cluster = api.cluster_get(self.request, cluster_id)
+        LOG.info('hlahaha')
+        LOG.info(cluster)
+        LOG.info(type(cluster))
+        return cluster
+
+
+
+    def get_tabs(self, request, *args, **kwargs):
+        cluster = self.get_data()
+        return self.tab_group_class(request, cluster=cluster, **kwargs)
+
+    @staticmethod
+    def get_redirect_url():
+        return reverse('horizon:project:queues:index')

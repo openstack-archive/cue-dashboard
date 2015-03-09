@@ -22,7 +22,6 @@ from keystoneclient import session as ksc_session
 from keystoneclient.auth.identity import v2
 from collections import namedtuple
 from openstack_dashboard.api import base
-
 from horizon.utils.memoized import memoized  # noqa
 
 
@@ -38,16 +37,25 @@ def cueclient(request):
 
 
 def clusters_list(request, marker=None):
-    #todo
-    #This is needed because the cue client returns a dict
-    #instead of a cluster object.
     clusters = []
     clusters_dict = cueclient(request).clusters.list()
     for cluster_dict in clusters_dict:
-        clusters.append(namedtuple('Cluster', cluster_dict)
-                        (**cluster_dict))
+        clusters.append(_to_cluster_object(cluster_dict))
     return clusters
+
+
+def cluster_get(request, cluster_id):
+    cluster_dict = cueclient(request).clusters.get(cluster_id)
+    cluster = _to_cluster_object(cluster_dict['cluster'])
+    return cluster
 
 
 def delete_cluster(request, cluster_id):
     return cueclient(request).clusters.delete(cluster_id)
+
+
+#todo
+#This is needed because the cue client returns a dict
+#instead of a cluster object.
+def _to_cluster_object(cluster_dict):
+    return namedtuple('Cluster', cluster_dict)(**cluster_dict)

@@ -1,0 +1,24 @@
+{% load i18n sizeformat %}
+
+<h3>{% trans "Cluster Overview" %}</h3>
+
+<div class="info detail">
+  <dl class="dl-horizontal">
+    <dt>{% trans "Name" %}</dt>
+    <dd>{{ cluster.name|default:_("None") }}</dd>
+    <dt>{% trans "ID" %}</dt>
+    <dd>{{ cluster.id|default:_("None") }}</dd>
+    <dt>{% trans "Status" %}</dt>
+    <dd>{{ cluster.status|default:_("-") }}</dd>
+    <dt>{% trans "Network" %}</dt>
+    <dd>{{ cluster.network_id|default:_("-") }}</dd>
+    <dt>{% trans "Flavor" %}</dt>
+    <dd>{{ cluster.flavor|default:_("-") }}</dd>
+    <dt>{% trans "Size" %}</dt>
+    <dd>{{ cluster.size|default:_("-") }}</dd>
+    <dt>{% trans "Volume Size" %}</dt>
+    <dd>{{ cluster.volume_size|default:_("-") }}</dd>
+    <dt>{% trans "Endpoints" %}</dt>
+    <dd>{{ cluster.end_points|default:_("-") }}</dd>
+  </dl>
+</div>
