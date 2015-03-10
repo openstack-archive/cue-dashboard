@@ -68,11 +68,6 @@ class SetInstanceDetailsAction(workflows.Action):
         return []
 
 
-TROVE_ADD_USER_PERMS = getattr(settings, 'TROVE_ADD_USER_PERMS', [])
-TROVE_ADD_DATABASE_PERMS = getattr(settings, 'TROVE_ADD_DATABASE_PERMS', [])
-TROVE_ADD_PERMS = TROVE_ADD_USER_PERMS + TROVE_ADD_DATABASE_PERMS
-
-
 class SetClusterDetails(workflows.Step):
     action_class = SetInstanceDetailsAction
     contributes = ("name", "volume", "flavor", "size")
@@ -114,7 +109,7 @@ class SetNetworkAction(workflows.Action):
 
 class SetNetwork(workflows.Step):
     action_class = SetNetworkAction
-    template_name = "project/databases/_launch_networks.html"
+    template_name = "queues/_launch_networks.html"
     contributes = ("network_id",)
 
     def contribute(self, data, context):
