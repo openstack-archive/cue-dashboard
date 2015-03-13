@@ -36,6 +36,7 @@ LOG = logging.getLogger(__name__)
 class IndexView(tables.DataTableView):
     table_class = ClusterTable
     template_name = 'queues/index.html'
+    page_title = _("Clusters")
 
     def get_data(self):
         return api.clusters_list(self.request)
@@ -66,11 +67,7 @@ class DetailView(horizon_tabs.TabbedTableView):
 
         cluster_id = self.kwargs['cluster_id']
         cluster = api.cluster_get(self.request, cluster_id)
-        LOG.info('hlahaha')
-        LOG.info(cluster)
-        LOG.info(type(cluster))
         return cluster
-
 
     def get_tabs(self, request, *args, **kwargs):
         cluster = self.get_data()
