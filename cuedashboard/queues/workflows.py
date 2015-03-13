@@ -37,9 +37,9 @@ class SetInstanceDetailsAction(workflows.Action):
     flavor = forms.ChoiceField(label=_("Flavor"),
                                help_text=_("Size of image to launch."))
     size = forms.IntegerField(label=_("Size"),
-                                min_value=0,
-                                initial=1,
-                                help_text=_("Size of cluster."))
+                              min_value=0,
+                              initial=1,
+                              help_text=_("Size of cluster."))
     volume = forms.IntegerField(label=_("Volume Size"),
                                 min_value=0,
                                 initial=1,
@@ -48,7 +48,6 @@ class SetInstanceDetailsAction(workflows.Action):
     class Meta(object):
         name = _("Details")
         help_text_template = "queues/_launch_details_help.html"
-
 
     @memoized.memoized_method
     def flavors(self, request):
@@ -119,9 +118,9 @@ class SetNetwork(workflows.Step):
             # contains an empty string, so remove it.
             networks = [n for n in networks if n != '']
             if networks:
-                #TODO
-                #Choosing the first networks until Cue
-                #supports more than one networks.
+                # TODO
+                # Choosing the first networks until Cue
+                # supports more than one networks.
                 context['network_id'] = networks[0]
 
         return context
@@ -140,7 +139,7 @@ class CreateCluster(workflows.Workflow):
     def __init__(self, request=None, context_seed=None, entry_point=None,
                  *args, **kwargs):
         super(CreateCluster, self).__init__(request, context_seed,
-                                             entry_point, *args, **kwargs)
+                                            entry_point, *args, **kwargs)
         self.attrs['autocomplete'] = (
             settings.HORIZON_CONFIG.get('password_autocomplete'))
 
@@ -156,7 +155,8 @@ class CreateCluster(workflows.Workflow):
                      context['size'], context['network_id'])
 
             cluster_create(request, context['name'], context['network_id'],
-                           context['flavor'], context['size'], context['volume'])
+                           context['flavor'], context['size'],
+                           context['volume'])
             return True
         except Exception:
             exceptions.handle(request)
