@@ -51,7 +51,7 @@ def cluster_get(request, cluster_id):
 
 
 def cluster_create(request, name, nic, flavor, size, volume_size):
-    return cueclient(request).clusters.create(name, nic,flavor,
+    return cueclient(request).clusters.create(name, nic, flavor,
                                               size, volume_size)
 
 
@@ -59,8 +59,8 @@ def delete_cluster(request, cluster_id):
     return cueclient(request).clusters.delete(cluster_id)
 
 
-#todo
-#This is needed because the cue client returns a dict
-#instead of a cluster object.
+# todo
+# This is needed because the cue client returns a dict
+# instead of a cluster object.
 def _to_cluster_object(cluster_dict):
     return namedtuple('Cluster', cluster_dict)(**cluster_dict)
