@@ -59,7 +59,7 @@ class ClusterTable(tables.DataTable):
     name = tables.Column("name",
                          verbose_name=_("Name"),
                          link='horizon:project:queues:detail')
-    size = tables.Column("size", verbose_name=_("Size"),)
+    size = tables.Column("size", verbose_name=_("Cluster Size"),)
     flavor = tables.Column("flavor", verbose_name=_("Flavor"),)
     status = tables.Column("status", verbose_name=_("Status"))
 

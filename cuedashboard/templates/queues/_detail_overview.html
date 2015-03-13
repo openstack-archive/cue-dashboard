@@ -14,10 +14,8 @@
     <dd>{{ cluster.network_id|default:_("-") }}</dd>
     <dt>{% trans "Flavor" %}</dt>
     <dd>{{ cluster.flavor|default:_("-") }}</dd>
-    <dt>{% trans "Size" %}</dt>
+    <dt>{% trans "Cluster Size" %}</dt>
     <dd>{{ cluster.size|default:_("-") }}</dd>
-    <dt>{% trans "Volume Size" %}</dt>
-    <dd>{{ cluster.volume_size|default:_("-") }}</dd>
     <dt>{% trans "Endpoints" %}</dt>
     <dd>{{ cluster.end_points|default:_("-") }}</dd>
   </dl>
