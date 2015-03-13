@@ -36,19 +36,14 @@ class SetInstanceDetailsAction(workflows.Action):
     name = forms.CharField(max_length=80, label=_("Cluster Name"))
     flavor = forms.ChoiceField(label=_("Flavor"),
                                help_text=_("Size of image to launch."))
-    size = forms.IntegerField(label=_("Size"),
-                                min_value=0,
-                                initial=1,
-                                help_text=_("Size of cluster."))
-    volume = forms.IntegerField(label=_("Volume Size"),
-                                min_value=0,
-                                initial=1,
-                                help_text=_("Size of the volume in GB."))
+    size = forms.IntegerField(label=_("Cluster Size"),
+                              min_value=1,
+                              initial=1,
+                              help_text=_("Size of cluster."))
 
     class Meta(object):
         name = _("Details")
         help_text_template = "queues/_launch_details_help.html"
-
 
     @memoized.memoized_method
     def flavors(self, request):
@@ -70,7 +65,7 @@ class SetInstanceDetailsAction(workflows.Action):
 
 class SetClusterDetails(workflows.Step):
     action_class = SetInstanceDetailsAction
-    contributes = ("name", "volume", "flavor", "size")
+    contributes = ("name", "flavor", "size")
 
 
 class SetNetworkAction(workflows.Action):
@@ -93,6 +88,13 @@ class SetNetworkAction(workflows.Action):
         name = _("Networking")
         permissions = ('openstack.services.network',)
         help_text = _("Select networks for your cluster.")
+
+    def clean(self):
+        # Cue does not currently support attaching multiple networks.
+        if len(self.data.getlist("network", None)) > 1:
+            msg = _("You must select only one network.")
+            self._errors["network"] = self.error_class([msg])
+        return self.cleaned_data
 
     def populate_network_choices(self, request, context):
         try:
@@ -119,9 +121,9 @@ class SetNetwork(workflows.Step):
             # contains an empty string, so remove it.
             networks = [n for n in networks if n != '']
             if networks:
-                #TODO
-                #Choosing the first networks until Cue
-                #supports more than one networks.
+                # TODO
+                # Choosing the first networks until Cue
+                # supports more than one networks.
                 context['network_id'] = networks[0]
 
         return context
@@ -140,7 +142,7 @@ class CreateCluster(workflows.Workflow):
     def __init__(self, request=None, context_seed=None, entry_point=None,
                  *args, **kwargs):
         super(CreateCluster, self).__init__(request, context_seed,
-                                             entry_point, *args, **kwargs)
+                                            entry_point, *args, **kwargs)
         self.attrs['autocomplete'] = (
             settings.HORIZON_CONFIG.get('password_autocomplete'))
 
@@ -151,12 +153,12 @@ class CreateCluster(workflows.Workflow):
     def handle(self, request, context):
         try:
             LOG.info("Launching message queue cluster with parameters "
-                     "{name=%s, volume=%s, flavor=%s, size=%s, nics=%s}",
-                     context['name'], context['volume'], context['flavor'],
+                     "{name=%s, flavor=%s, size=%s, nics=%s}",
+                     context['name'], context['flavor'],
                      context['size'], context['network_id'])
 
             cluster_create(request, context['name'], context['network_id'],
-                           context['flavor'], context['size'], context['volume'])
+                           context['flavor'], context['size'])
             return True
         except Exception:
             exceptions.handle(request)

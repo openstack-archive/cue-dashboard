@@ -20,6 +20,10 @@ from django.utils.translation import ungettext_lazy
 from django.utils.translation import ugettext as _
 from horizon import tables
 from cuedashboard import api
+import logging
+
+
+LOG = logging.getLogger(__name__)
 
 
 class CreateCluster(tables.LinkAction):
@@ -55,16 +59,23 @@ class DeleteCluster(tables.BatchAction):
         api.delete_cluster(request, obj_id)
 
 
+class UpdateRow(tables.Row):
+    ajax = True
+
+    def get_data(self, request, cluster_id):
+        return api.cluster_get(request, cluster_id)
+
+
 class ClusterTable(tables.DataTable):
     name = tables.Column("name",
                          verbose_name=_("Name"),
                          link='horizon:project:queues:detail')
-    size = tables.Column("size", verbose_name=_("Size"),)
-    flavor = tables.Column("flavor", verbose_name=_("Flavor"),)
+    size = tables.Column("size", verbose_name=_("Cluster Size"),)
     status = tables.Column("status", verbose_name=_("Status"))
 
     class Meta:
         name = "clusters"
         verbose_name = _("Clusters")
+        row_class = UpdateRow
         table_actions = (CreateCluster, DeleteCluster,)
         row_actions = (DeleteCluster,)

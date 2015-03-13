@@ -21,14 +21,14 @@ from cueclient.v1 import client
 from keystoneclient import session as ksc_session
 from keystoneclient.auth.identity import v2
 from collections import namedtuple
-from openstack_dashboard.api import base
+from openstack_dashboard import api
 from horizon.utils.memoized import memoized  # noqa
 
 
 @memoized
 def cueclient(request):
     cacert = getattr(settings, 'OPENSTACK_SSL_CACERT', None)
-    auth_url = base.url_for(request, 'identity')
+    auth_url = api.base.url_for(request, 'identity')
     auth = v2.Token(auth_url, request.user.token.id,
                     tenant_id=request.user.tenant_id,
                     tenant_name=request.user.tenant_name)
@@ -50,17 +50,27 @@ def cluster_get(request, cluster_id):
     return cluster
 
 
-def cluster_create(request, name, nic, flavor, size, volume_size):
-    return cueclient(request).clusters.create(name, nic,flavor,
-                                              size, volume_size)
+def cluster_create(request, name, nic, flavor, size):
+    return cueclient(request).clusters.create(name, nic[0],
+                                              flavor, size, 0)
 
 
 def delete_cluster(request, cluster_id):
     return cueclient(request).clusters.delete(cluster_id)
 
 
-#todo
-#This is needed because the cue client returns a dict
-#instead of a cluster object.
+def flavor(request, flavor_id):
+    return api.nova.flavor_get(request, flavor_id)
+
+
+# todo
+# This is needed because the cue client returns a dict
+# instead of a cluster object.
 def _to_cluster_object(cluster_dict):
+    endpoint = (cluster_dict['end_points'][0] if cluster_dict['end_points']
+                else None)
+    if endpoint:
+        cluster_dict['url'] = "".join((endpoint['type'],
+                                       '://',
+                                       endpoint['uri']))
     return namedtuple('Cluster', cluster_dict)(**cluster_dict)
