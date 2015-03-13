@@ -6,4 +6,6 @@ ChangeLog
 .DS_Store
 cue_dashboard.egg*
 build/
+.tox/
+.egg/
 .idea/
