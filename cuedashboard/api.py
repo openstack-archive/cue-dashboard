@@ -51,7 +51,7 @@ def cluster_get(request, cluster_id):
 
 
 def cluster_create(request, name, nic, flavor, size):
-    return cueclient(request).clusters.create(name, nic[0],
+    return cueclient(request).clusters.create(name, nic,
                                               flavor, size, 0)
 
 
