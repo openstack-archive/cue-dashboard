@@ -7,5 +7,5 @@ ChangeLog
 cue_dashboard.egg*
 build/
 .tox/
-.egg/
+.eggs/
 .idea/

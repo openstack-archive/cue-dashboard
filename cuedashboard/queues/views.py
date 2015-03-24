@@ -16,8 +16,6 @@
 # Copyright [2014] Hewlett-Packard Development Company, L.P.
 # limitations under the License.
 
-import logging
-
 from cuedashboard import api
 from cuedashboard.queues.tables import ClusterTable
 from cuedashboard.queues.tabs import ClusterDetailTabs
@@ -28,9 +26,6 @@ from horizon import tables
 from horizon import tabs as horizon_tabs
 from horizon.utils import memoized
 from horizon import workflows
-
-
-LOG = logging.getLogger(__name__)
 
 
 class IndexView(tables.DataTableView):
