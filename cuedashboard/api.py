@@ -67,10 +67,7 @@ def flavor(request, flavor_id):
 # This is needed because the cue client returns a dict
 # instead of a cluster object.
 def _to_cluster_object(cluster_dict):
-    endpoint = (cluster_dict['end_points'][0] if cluster_dict['end_points']
-                else None)
-    if endpoint:
-        cluster_dict['url'] = "".join((endpoint['type'],
-                                       '://',
-                                       endpoint['uri']))
+    endpoints = ["".join((endpoint['type'], '://', endpoint['uri']))
+                 for endpoint in cluster_dict['end_points']]
+    cluster_dict['url'] = endpoints
     return namedtuple('Cluster', cluster_dict)(**cluster_dict)
