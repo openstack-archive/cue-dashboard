@@ -13,14 +13,16 @@
 #    under the License.
 
 import logging
-
+import json
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
+from django.forms import ValidationError
 
 from horizon import exceptions
 from horizon import forms
 from horizon.utils import memoized
+from horizon.utils import validators
 from horizon import workflows
 from openstack_dashboard import api
 from cuedashboard.api import cluster_create
@@ -32,14 +34,58 @@ from openstack_dashboard.dashboards.project.instances \
 LOG = logging.getLogger(__name__)
 
 
+class PasswordMixin(forms.SelfHandlingForm):
+    password = forms.RegexField(
+        label=_("Password"),
+        widget=forms.PasswordInput(render_value=False),
+        regex=validators.password_validator(),
+        error_messages={'invalid': validators.password_validator_msg()})
+    confirm_password = forms.CharField(
+        label=_("Confirm Password"),
+        widget=forms.PasswordInput(render_value=False))
+    no_autocomplete = True
+
+    def clean(self):
+        '''Check to make sure password fields match.'''
+        data = super(forms.Form, self).clean()
+        if 'password' in data:
+            if data['password'] != data.get('confirm_password', None):
+                raise ValidationError(_('Passwords do not match.'))
+        return data
+
+
 class SetInstanceDetailsAction(workflows.Action):
     name = forms.CharField(max_length=80, label=_("Cluster Name"))
     flavor = forms.ChoiceField(label=_("Flavor"),
-                               help_text=_("Size of image to launch."))
+                               help_text=_("The amount of RAM and CPU included \
+                               in each node of the cluster."))
     size = forms.IntegerField(label=_("Cluster Size"),
                               min_value=1,
                               initial=1,
-                              help_text=_("Size of cluster."))
+                              help_text=_("The number of nodes that make up \
+                              the cluster."))
+    network = forms.ChoiceField(label=_("Network"),
+                                help_text=_("Network to attach to the \
+                                cluster."))
+    username = forms.CharField(max_length=80, label=_("User Name"),
+                               help_text=_("User name for logging into the \
+                               RabbitMQ Management UI."))
+    password = forms.RegexField(
+        label=_("Password"),
+        widget=forms.PasswordInput(render_value=False),
+        regex=validators.password_validator(),
+        error_messages={'invalid': validators.password_validator_msg()})
+    confirm_password = forms.CharField(
+        label=_("Confirm Password"),
+        widget=forms.PasswordInput(render_value=False))
+
+    def clean(self):
+        '''Check to make sure password fields match.'''
+        data = super(forms.Form, self).clean()
+        if 'password' in data:
+            if data['password'] != data.get('confirm_password', None):
+                raise ValidationError(_('Passwords do not match.'))
+        return data
 
     class Meta(object):
         name = _("Details")
@@ -62,41 +108,8 @@ class SetInstanceDetailsAction(workflows.Action):
             return instance_utils.sort_flavor_list(request, flavors)
         return []
 
-
-class SetClusterDetails(workflows.Step):
-    action_class = SetInstanceDetailsAction
-    contributes = ("name", "flavor", "size")
-
-
-class SetNetworkAction(workflows.Action):
-    network = forms.MultipleChoiceField(label=_("Networks"),
-                                        widget=forms.CheckboxSelectMultiple(),
-                                        error_messages={
-                                            'required': _(
-                                                "At least one network must"
-                                                " be specified.")},
-                                        help_text=_("Create cluster with"
-                                                    " these networks"))
-
-    def __init__(self, request, *args, **kwargs):
-        super(SetNetworkAction, self).__init__(request, *args, **kwargs)
-        network_list = self.fields["network"].choices
-        if len(network_list) == 1:
-            self.fields['network'].initial = [network_list[0][0]]
-
-    class Meta(object):
-        name = _("Networking")
-        permissions = ('openstack.services.network',)
-        help_text = _("Select networks for your cluster.")
-
-    def clean(self):
-        # Cue does not currently support attaching multiple networks.
-        if len(self.data.getlist("network", None)) > 1:
-            msg = _("You must select only one network.")
-            self._errors["network"] = self.error_class([msg])
-        return self.cleaned_data
-
-    def populate_network_choices(self, request, context):
+    @memoized.memoized_method
+    def networks(self, request):
         try:
             tenant_id = self.request.user.tenant_id
             networks = api.neutron.network_list_for_tenant(request, tenant_id)
@@ -108,25 +121,25 @@ class SetNetworkAction(workflows.Action):
                               _('Unable to retrieve networks.'))
         return network_list
 
+    def populate_network_choices(self, request, context):
+        return self.networks(request)
 
-class SetNetwork(workflows.Step):
-    action_class = SetNetworkAction
-    template_name = "queues/_launch_networks.html"
-    contributes = ("network_id",)
+    def get_help_text(self, extra_context=None):
+        extra = {} if extra_context is None else dict(extra_context)
+        flavors = json.dumps([f._info for f in
+                              instance_utils.flavor_list(self.request)])
+        try:
+            extra['flavors'] = flavors
 
-    def contribute(self, data, context):
-        if data:
-            networks = self.workflow.request.POST.getlist("network")
-            # If no networks are explicitly specified, network list
-            # contains an empty string, so remove it.
-            networks = [n for n in networks if n != '']
-            if networks:
-                # TODO
-                # Choosing the first networks until Cue
-                # supports more than one networks.
-                context['network_id'] = networks[0]
+        except Exception:
+            exceptions.handle(self.request,
+                              _("Unable to retrieve quota information."))
+        return super(SetInstanceDetailsAction, self).get_help_text(extra)
 
-        return context
+
+class SetClusterDetails(workflows.Step):
+    action_class = SetInstanceDetailsAction
+    contributes = ("name", "flavor", "size", "network")
 
 
 class CreateCluster(workflows.Workflow):
@@ -136,8 +149,7 @@ class CreateCluster(workflows.Workflow):
     success_message = _('Created cluster named "%(name)s".')
     failure_message = _('Unable to create cluster named "%(name)s".')
     success_url = "horizon:project:queues:index"
-    default_steps = (SetClusterDetails,
-                     SetNetwork)
+    default_steps = (SetClusterDetails,)
 
     def __init__(self, request=None, context_seed=None, entry_point=None,
                  *args, **kwargs):
@@ -155,9 +167,9 @@ class CreateCluster(workflows.Workflow):
             LOG.info("Launching message queue cluster with parameters "
                      "{name=%s, flavor=%s, size=%s, nics=%s}",
                      context['name'], context['flavor'],
-                     context['size'], context['network_id'])
+                     context['size'], context['network'])
 
-            cluster_create(request, context['name'], context['network_id'],
+            cluster_create(request, context['name'], context['network'],
                            context['flavor'], context['size'])
             return True
         except Exception:
