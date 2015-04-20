@@ -12,23 +12,25 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import logging
 import json
+import logging
+
 from django.conf import settings
 from django.core.urlresolvers import reverse
-from django.utils.translation import ugettext_lazy as _
 from django.forms import ValidationError
-
+from django.utils.translation import ugettext_lazy as _
 from horizon import exceptions
 from horizon import forms
 from horizon.utils import memoized
 from horizon.utils import validators
 from horizon import workflows
 from openstack_dashboard import api
+from oslo.utils import importutils
+
 from cuedashboard.api import cluster_create
 
-from openstack_dashboard.dashboards.project.instances \
-    import utils as instance_utils
+instance_utils = importutils.import_module(
+    "openstack_dashboard.dashboards.project.instances.utils")
 
 
 LOG = logging.getLogger(__name__)
@@ -57,19 +59,19 @@ class PasswordMixin(forms.SelfHandlingForm):
 class SetInstanceDetailsAction(workflows.Action):
     name = forms.CharField(max_length=80, label=_("Cluster Name"))
     flavor = forms.ChoiceField(label=_("Flavor"),
-                               help_text=_("The amount of RAM and CPU included \
-                               in each node of the cluster."))
+                               help_text=_("The amount of RAM and CPU included"
+                                           " in each node of the cluster."))
     size = forms.IntegerField(label=_("Cluster Size"),
                               min_value=1,
                               initial=1,
-                              help_text=_("The number of nodes that make up \
-                              the cluster."))
+                              help_text=_("The number of nodes that make up "
+                                          "the cluster."))
     network = forms.ChoiceField(label=_("Network"),
-                                help_text=_("Network to attach to the \
-                                cluster."))
+                                help_text=_("Network to attach to the "
+                                            "cluster."))
     username = forms.CharField(max_length=80, label=_("User Name"),
-                               help_text=_("User name for logging into the \
-                               RabbitMQ Management UI."))
+                               help_text=_("User name for logging into the "
+                                           "RabbitMQ Management UI."))
     password = forms.RegexField(
         label=_("Password"),
         widget=forms.PasswordInput(render_value=False),

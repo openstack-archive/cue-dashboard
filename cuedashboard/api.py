@@ -1,4 +1,4 @@
-# Copyright 2014 Hewlett-Packard Development Company, L.P.
+# Copyright 2015 Hewlett-Packard Development Company, L.P.
 #
 # Authors: Steve Leon <kokhang@gmail.com>
 #
@@ -16,12 +16,13 @@
 # Copyright [2014] Hewlett-Packard Development Company, L.P.
 # limitations under the License.
 
-from django.conf import settings
 from cueclient.v1 import client
-from keystoneclient import session as ksc_session
-from keystoneclient.auth.identity import v2
-from openstack_dashboard import api
+
+from django.conf import settings
 from horizon.utils.memoized import memoized  # noqa
+from keystoneclient.auth.identity import v2
+from keystoneclient import session as ksc_session
+from openstack_dashboard import api
 
 
 @memoized
