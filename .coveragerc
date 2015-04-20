@@ -1,0 +1,6 @@
+[run]
+branch = True
+source = cuedashboard
+
+[report]
+ignore-errors = True

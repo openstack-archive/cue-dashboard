@@ -16,13 +16,14 @@
 # Copyright [2014] Hewlett-Packard Development Company, L.P.
 # limitations under the License.
 
-from django.conf import settings
-from cueclient.v1 import client
-from keystoneclient import session as ksc_session
-from keystoneclient.auth.identity import v2
 from collections import namedtuple
-from openstack_dashboard import api
+from cueclient.v1 import client
+
+from django.conf import settings
 from horizon.utils.memoized import memoized  # noqa
+from keystoneclient.auth.identity import v2
+from keystoneclient import session as ksc_session
+from openstack_dashboard import api
 
 
 @memoized
