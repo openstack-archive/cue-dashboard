@@ -16,9 +16,10 @@
 # Copyright [2014] Hewlett-Packard Development Company, L.P.
 # limitations under the License.
 
+from cuedashboard.queues import views
+
 from django.conf.urls import patterns
 from django.conf.urls import url
-from cuedashboard.queues import views
 
 
 CLUSTERS = r'^(?P<cluster_id>[^/]+)/%s$'

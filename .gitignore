@@ -4,8 +4,21 @@ vagrant/
 AUTHORS
 ChangeLog
 .DS_Store
-cue_dashboard.egg*
+cuedashboard.egg*
 build/
-.tox/
 .eggs/
 .idea/
+cover/
+*.lock
+.secret_key_store
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.testrepository/
+.coverage
+.cache
+nosetests.xml
+coverage.xml
+
+

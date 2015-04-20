@@ -20,6 +20,7 @@ from cuedashboard import api
 from cuedashboard.queues.tables import ClusterTable
 from cuedashboard.queues.tabs import ClusterDetailTabs
 from cuedashboard.queues import workflows as cue_workflows
+
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 from horizon import tables
