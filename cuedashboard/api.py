@@ -20,7 +20,6 @@ from django.conf import settings
 from cueclient.v1 import client
 from keystoneclient import session as ksc_session
 from keystoneclient.auth.identity import v2
-from collections import namedtuple
 from openstack_dashboard import api
 from horizon.utils.memoized import memoized  # noqa
 
@@ -37,16 +36,12 @@ def cueclient(request):
 
 
 def clusters_list(request, marker=None):
-    clusters = []
-    clusters_dict = cueclient(request).clusters.list()
-    for cluster_dict in clusters_dict:
-        clusters.append(_to_cluster_object(cluster_dict))
+    clusters = cueclient(request).clusters.list()
     return clusters
 
 
 def cluster_get(request, cluster_id):
-    cluster_dict = cueclient(request).clusters.get(cluster_id)
-    cluster = _to_cluster_object(cluster_dict['cluster'])
+    cluster = cueclient(request).clusters.get(cluster_id)
     return cluster
 
 
@@ -61,13 +56,3 @@ def delete_cluster(request, cluster_id):
 
 def flavor(request, flavor_id):
     return api.nova.flavor_get(request, flavor_id)
-
-
-# todo
-# This is needed because the cue client returns a dict
-# instead of a cluster object.
-def _to_cluster_object(cluster_dict):
-    endpoints = ["".join((endpoint['type'], '://', endpoint['uri']))
-                 for endpoint in cluster_dict['end_points']]
-    cluster_dict['url'] = endpoints
-    return namedtuple('Cluster', cluster_dict)(**cluster_dict)

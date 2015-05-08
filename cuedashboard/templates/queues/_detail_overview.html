@@ -17,6 +17,6 @@
     <dt>{% trans "Cluster Size" %}</dt>
     <dd>{{ cluster.size|default:_("-") }}</dd>
     <dt>{% trans "Endpoint" %}</dt>
-    <dd>{{ cluster.url|join:", " |default:_("-") }}</dd>
+    <dd>{{ cluster.end_points|join:", " |default:_("-") }}</dd>
   </dl>
 </div>
