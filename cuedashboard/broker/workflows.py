@@ -91,7 +91,7 @@ class SetInstanceDetailsAction(workflows.Action):
 
     class Meta(object):
         name = _("Details")
-        help_text_template = "queues/_launch_details_help.html"
+        help_text_template = "broker/_launch_details_help.html"
 
     @memoized.memoized_method
     def flavors(self, request):
@@ -99,7 +99,7 @@ class SetInstanceDetailsAction(workflows.Action):
             return api.nova.flavor_list(request)
         except Exception:
             LOG.exception("Exception while obtaining flavors list")
-            redirect = reverse("horizon:project:queues:index")
+            redirect = reverse("horizon:project:broker:index")
             exceptions.handle(request,
                               _('Unable to obtain flavors.'),
                               redirect=redirect)
@@ -150,7 +150,7 @@ class CreateCluster(workflows.Workflow):
     finalize_button_name = _("Create")
     success_message = _('Created cluster named "%(name)s".')
     failure_message = _('Unable to create cluster named "%(name)s".')
-    success_url = "horizon:project:queues:index"
+    success_url = "horizon:project:broker:index"
     default_steps = (SetClusterDetails,)
 
     def __init__(self, request=None, context_seed=None, entry_point=None,
@@ -166,7 +166,7 @@ class CreateCluster(workflows.Workflow):
 
     def handle(self, request, context):
         try:
-            LOG.info("Launching message queue cluster with parameters "
+            LOG.info("Launching message broker cluster with parameters "
                      "{name=%s, flavor=%s, size=%s, nics=%s}",
                      context['name'], context['flavor'],
                      context['size'], context['network'])

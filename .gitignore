@@ -5,6 +5,7 @@ AUTHORS
 ChangeLog
 .DS_Store
 cuedashboard.egg*
+cue_dashboard.egg*
 build/
 .eggs/
 .idea/

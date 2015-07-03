@@ -22,5 +22,5 @@ import horizon
 
 class CuePanel(horizon.Panel):
     name = _("Clusters")
-    slug = 'queues'
-    permissions = ('openstack.services.message_queue',)
+    slug = 'broker'
+    permissions = ('openstack.services.message-broker',)

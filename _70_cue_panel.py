@@ -14,10 +14,10 @@
 # Copyright [2014] Hewlett-Packard Development Company, L.P.
 # limitations under the License.
 
-PANEL = 'queues'
-PANEL_GROUP = 'queuesgroup'
+PANEL = 'broker'
+PANEL_GROUP = 'messagebroker'
 PANEL_DASHBOARD = 'project'
-ADD_PANEL = 'cuedashboard.queues.panel.CuePanel'
+ADD_PANEL = 'cuedashboard.broker.panel.CuePanel'
 ADD_INSTALLED_APPS = [
     'cuedashboard',
 ]
