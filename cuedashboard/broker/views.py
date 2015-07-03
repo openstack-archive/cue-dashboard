@@ -17,9 +17,9 @@
 # limitations under the License.
 
 from cuedashboard import api
-from cuedashboard.queues.tables import ClusterTable
-from cuedashboard.queues.tabs import ClusterDetailTabs
-from cuedashboard.queues import workflows as cue_workflows
+from cuedashboard.broker.tables import ClusterTable
+from cuedashboard.broker.tabs import ClusterDetailTabs
+from cuedashboard.broker import workflows as cue_workflows
 
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
@@ -31,7 +31,7 @@ from horizon import workflows
 
 class IndexView(tables.DataTableView):
     table_class = ClusterTable
-    template_name = 'queues/index.html'
+    template_name = 'broker/index.html'
     page_title = _("Clusters")
 
     def get_data(self):
@@ -40,13 +40,13 @@ class IndexView(tables.DataTableView):
 
 class CreateClusterView(workflows.WorkflowView):
     workflow_class = cue_workflows.CreateCluster
-    template_name = "queues/launch.html"
+    template_name = "broker/launch.html"
     page_title = _("Create Cluster")
 
 
 class DetailView(horizon_tabs.TabbedTableView):
     tab_group_class = ClusterDetailTabs
-    template_name = 'queues/detail.html'
+    template_name = 'broker/detail.html'
     page_title = _("Cluster Details: {{ cluster.name }}")
 
     def get_context_data(self, **kwargs):
@@ -78,4 +78,4 @@ class DetailView(horizon_tabs.TabbedTableView):
 
     @staticmethod
     def get_redirect_url():
-        return reverse('horizon:project:queues:index')
+        return reverse('horizon:project:broker:index')
