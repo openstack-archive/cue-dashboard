@@ -1,6 +1,6 @@
 import testtools
 
-import cuedashboard.queues.tables as tables
+import cuedashboard.messagebroker.tables as tables
 
 
 class FakeTest(testtools.TestCase):

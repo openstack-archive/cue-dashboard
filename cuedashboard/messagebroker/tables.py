@@ -26,7 +26,7 @@ from horizon import tables
 class CreateCluster(tables.LinkAction):
     name = "create"
     verbose_name = _("Create Cluster")
-    url = "horizon:project:queues:create"
+    url = "horizon:project:messagebroker:create"
     classes = ("ajax-modal", "btn-create")
 
 
@@ -73,7 +73,7 @@ def format_endpoints(cluster):
 class ClusterTable(tables.DataTable):
     name = tables.Column("name",
                          verbose_name=_("Name"),
-                         link='horizon:project:queues:detail')
+                         link='horizon:project:messagebroker:detail')
     size = tables.Column("size", verbose_name=_("Cluster Size"),)
     endpoint = tables.Column(format_endpoints, verbose_name=_("Endpoints"))
     status = tables.Column("status", verbose_name=_("Status"))

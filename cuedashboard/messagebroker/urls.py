@@ -1,4 +1,4 @@
-# Copyright 2014 Hewlett-Packard Development Company, L.P.
+# Copyright 2015 Hewlett-Packard Development Company, L.P.
 #
 # Authors: Steve Leon <kokhang@gmail.com>
 #
@@ -16,11 +16,19 @@
 # Copyright [2014] Hewlett-Packard Development Company, L.P.
 # limitations under the License.
 
-from django.utils.translation import ugettext_lazy as _
-import horizon
+from cuedashboard.messagebroker import views
+
+from django.conf.urls import patterns
+from django.conf.urls import url
 
 
-class CuePanel(horizon.Panel):
-    name = _("Clusters")
-    slug = 'queues'
-    permissions = ('openstack.services.message_queue',)
+CLUSTERS = r'^(?P<cluster_id>[^/]+)/%s$'
+
+urlpatterns = patterns('',
+                       url(r'^$', views.IndexView.as_view(),
+                           name='index'),
+                       url(CLUSTERS % '', views.DetailView.as_view(),
+                           name='detail'),
+                       url(r'^create$', views.CreateClusterView.as_view(),
+                           name='create'),
+                       )

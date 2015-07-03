@@ -1,4 +1,6 @@
-# Copyright 2015 Hewlett-Packard Development Company, L.P.
+# Copyright 2014 Hewlett-Packard Development Company, L.P.
+#
+# Authors: Steve Leon <kokhang@gmail.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,19 +17,10 @@
 # limitations under the License.
 
 from django.utils.translation import ugettext_lazy as _
-from horizon import tabs
+import horizon
 
 
-class OverviewTab(tabs.Tab):
-    name = _("Overview")
-    slug = "overview"
-    template_name = "project/queues/_detail_overview.html"
-
-    def get_context_data(self, request):
-        return {"cluster": self.tab_group.kwargs['cluster']}
-
-
-class ClusterDetailTabs(tabs.TabGroup):
-    slug = "cluster_details"
-    tabs = (OverviewTab,)
-    sticky = True
+class CuePanel(horizon.Panel):
+    name = _("Clusters")
+    slug = 'messagebroker'
+    permissions = ('openstack.services.message-broker',)
