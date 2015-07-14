@@ -64,9 +64,9 @@ class UpdateRow(tables.Row):
 
 
 def format_endpoints(cluster):
-    if hasattr(cluster, "end_points"):
+    if hasattr(cluster, "endpoints"):
         return ', '.join("%s://%s" % (endpoint['type'], endpoint['uri'])
-                         for endpoint in cluster.end_points)
+                         for endpoint in cluster.endpoints)
     return "-"
 
 
