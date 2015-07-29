@@ -1,0 +1,9 @@
+Verified+2: Jenkins
+Code-Review+2: Vipul Sabhaya <vipuls@gmail.com>
+Workflow+1: Vipul Sabhaya <vipuls@gmail.com>
+Code-Review+1: Davide Agnello <dagnello@hp.com>
+Submitted-by: Jenkins
+Submitted-at: Wed, 29 Jul 2015 00:54:55 +0000
+Reviewed-on: https://review.openstack.org/199317
+Project: openstack/cue-dashboard
+Branch: refs/heads/master
