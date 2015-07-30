@@ -25,7 +25,7 @@ from horizon.utils import memoized
 from horizon.utils import validators
 from horizon import workflows
 from openstack_dashboard import api
-from oslo.utils import importutils
+from oslo_utils import importutils
 
 from cuedashboard.api import cluster_create
 
