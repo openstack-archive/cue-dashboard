@@ -79,11 +79,11 @@ HORIZON_CONFIG = {
 HORIZON_IMAGES_ALLOW_UPLOAD = True
 
 AVAILABLE_REGIONS = [
-    ('http://localhost:5000/v2.0', 'local'),
-    ('http://remote:5000/v2.0', 'remote'),
+    ('http://localhost:5000/v3', 'local'),
+    ('http://remote:5000/v3', 'remote'),
 ]
 
-OPENSTACK_KEYSTONE_URL = "http://localhost:5000/v2.0"
+OPENSTACK_KEYSTONE_URL = "http://localhost:5000/v3"
 OPENSTACK_KEYSTONE_DEFAULT_ROLE = "_member_"
 
 OPENSTACK_KEYSTONE_MULTIDOMAIN_SUPPORT = True
