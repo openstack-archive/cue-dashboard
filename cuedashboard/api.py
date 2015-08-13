@@ -21,17 +21,26 @@ from cueclient.v1 import client
 from django.conf import settings
 from horizon.utils.memoized import memoized  # noqa
 from keystoneclient.auth.identity import v2
+from keystoneclient.auth.identity import v3
 from keystoneclient import session as ksc_session
+from openstack_auth import utils as auth_utils
 from openstack_dashboard import api
 
 
 @memoized
 def cueclient(request):
     cacert = getattr(settings, 'OPENSTACK_SSL_CACERT', None)
-    auth_url = api.base.url_for(request, 'identity')
-    auth = v2.Token(auth_url, request.user.token.id,
-                    tenant_id=request.user.tenant_id,
-                    tenant_name=request.user.tenant_name)
+    auth_url = getattr(settings, 'OPENSTACK_KEYSTONE_URL')
+    auth_version = auth_utils.get_keystone_version()
+    if auth_version == 3:
+        auth = v3.Token(auth_url, request.user.token.id,
+                        project_id=request.user.project_id,
+                        project_name=request.user.project_name)
+    elif auth_version == 2 or 2.0:
+        auth = v2.Token(auth_url, request.user.token.id,
+                        tenant_id=request.user.tenant_id,
+                        tenant_name=request.user.tenant_name)
+
     session = ksc_session.Session(auth=auth, verify=cacert)
     return client.Client(session=session)
 
