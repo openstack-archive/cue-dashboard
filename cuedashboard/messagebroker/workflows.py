@@ -141,7 +141,7 @@ class SetInstanceDetailsAction(workflows.Action):
 
 class SetClusterDetails(workflows.Step):
     action_class = SetInstanceDetailsAction
-    contributes = ("name", "flavor", "size", "network")
+    contributes = ("name", "flavor", "size", "network", "username", "password")
 
 
 class CreateCluster(workflows.Workflow):
@@ -172,7 +172,8 @@ class CreateCluster(workflows.Workflow):
                      context['size'], context['network'])
 
             cluster_create(request, context['name'], context['network'],
-                           context['flavor'], context['size'])
+                           context['flavor'], context['size'],
+                           context['username'], context['password'])
             return True
         except Exception:
             exceptions.handle(request)

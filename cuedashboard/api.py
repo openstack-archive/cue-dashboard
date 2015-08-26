@@ -55,9 +55,9 @@ def cluster_get(request, cluster_id):
     return cluster
 
 
-def cluster_create(request, name, nic, flavor, size):
-    return cueclient(request).clusters.create(name, nic,
-                                              flavor, size, 0)
+def cluster_create(request, name, nic, flavor, size, username, password):
+    return cueclient(request).clusters.create(name, nic, flavor, size, 0,
+                                              'plain', username, password)
 
 
 def delete_cluster(request, cluster_id):
