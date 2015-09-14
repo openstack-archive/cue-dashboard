@@ -1,0 +1,9 @@
+Verified+2: Jenkins
+Code-Review+1: Steve Leon <kokhang@gmail.com>
+Code-Review+2: Min Pae <min.pae@hp.com>
+Workflow+1: Min Pae <min.pae@hp.com>
+Submitted-by: Jenkins
+Submitted-at: Mon, 14 Sep 2015 20:28:55 +0000
+Reviewed-on: https://review.openstack.org/217407
+Project: openstack/cue-dashboard
+Branch: refs/heads/master
