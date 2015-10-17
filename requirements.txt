@@ -1,2 +1,2 @@
-Django>=1.4,<1.7
+Django<1.9,>=1.7
 -e git+https://github.com/openstack/python-cueclient.git#egg=python-cueclient
