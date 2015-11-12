@@ -15,8 +15,6 @@
 
 import os
 
-from django.utils.translation import ugettext as _
-
 from horizon.test.settings import *  # noqa
 from horizon.utils import secret_key as secret_key_utils
 from openstack_dashboard import exceptions
@@ -62,7 +60,7 @@ HORIZON_CONFIG = {
     'default_dashboard': 'project',
     "password_validator": {
         "regex": '^.{8,18}$',
-        "help_text": _("Password must be between 8 and 18 characters.")
+        "help_text": "Password must be between 8 and 18 characters."
     },
     'user_home': None,
     'help_url': "http://docs.openstack.org",

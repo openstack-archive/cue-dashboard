@@ -22,7 +22,6 @@ from cuedashboard.messagebroker.tabs import ClusterDetailTabs
 from cuedashboard.messagebroker import workflows as cue_workflows
 
 from django.core.urlresolvers import reverse
-from django.utils.translation import ugettext_lazy as _
 from horizon import tables
 from horizon import tabs as horizon_tabs
 from horizon.utils import memoized
@@ -32,7 +31,7 @@ from horizon import workflows
 class IndexView(tables.DataTableView):
     table_class = ClusterTable
     template_name = 'messagebroker/index.html'
-    page_title = _("Clusters")
+    page_title = "Clusters"
 
     def get_data(self):
         return api.clusters_list(self.request)
@@ -41,13 +40,13 @@ class IndexView(tables.DataTableView):
 class CreateClusterView(workflows.WorkflowView):
     workflow_class = cue_workflows.CreateCluster
     template_name = "messagebroker/launch.html"
-    page_title = _("Create Cluster")
+    page_title = "Create Cluster"
 
 
 class DetailView(horizon_tabs.TabbedTableView):
     tab_group_class = ClusterDetailTabs
     template_name = 'messagebroker/detail.html'
-    page_title = _("Cluster Details: {{ cluster.name }}")
+    page_title = "Cluster Details: {{ cluster.name }}"
 
     def get_context_data(self, **kwargs):
         context = super(DetailView, self).get_context_data(**kwargs)

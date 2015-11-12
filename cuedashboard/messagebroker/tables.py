@@ -18,14 +18,13 @@
 
 from cuedashboard import api
 
-from django.utils.translation import ugettext as _
 from django.utils.translation import ungettext_lazy
 from horizon import tables
 
 
 class CreateCluster(tables.LinkAction):
     name = "create"
-    verbose_name = _("Create Cluster")
+    verbose_name = "Create Cluster"
     url = "horizon:project:messagebroker:create"
     classes = ("ajax-modal", "btn-create")
 
@@ -72,15 +71,15 @@ def format_endpoints(cluster):
 
 class ClusterTable(tables.DataTable):
     name = tables.Column("name",
-                         verbose_name=_("Name"),
+                         verbose_name="Name",
                          link='horizon:project:messagebroker:detail')
-    size = tables.Column("size", verbose_name=_("Cluster Size"),)
-    endpoint = tables.Column(format_endpoints, verbose_name=_("Endpoints"))
-    status = tables.Column("status", verbose_name=_("Status"))
+    size = tables.Column("size", verbose_name="Cluster Size",)
+    endpoint = tables.Column(format_endpoints, verbose_name="Endpoints")
+    status = tables.Column("status", verbose_name="Status")
 
     class Meta:
         name = "clusters"
-        verbose_name = _("Clusters")
+        verbose_name = "Clusters"
         row_class = UpdateRow
         table_actions = (CreateCluster, DeleteCluster,)
         row_actions = (DeleteCluster,)

@@ -16,11 +16,10 @@
 # Copyright [2014] Hewlett-Packard Development Company, L.P.
 # limitations under the License.
 
-from django.utils.translation import ugettext_lazy as _
 import horizon
 
 
 class CuePanel(horizon.Panel):
-    name = _("Clusters")
+    name = "Clusters"
     slug = 'messagebroker'
     permissions = ('openstack.services.message-broker',)

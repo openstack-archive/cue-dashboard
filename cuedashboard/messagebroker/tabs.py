@@ -14,12 +14,11 @@
 # Copyright [2014] Hewlett-Packard Development Company, L.P.
 # limitations under the License.
 
-from django.utils.translation import ugettext_lazy as _
 from horizon import tabs
 
 
 class OverviewTab(tabs.Tab):
-    name = _("Overview")
+    name = "Overview"
     slug = "overview"
     template_name = "project/messagebroker/_detail_overview.html"
 
