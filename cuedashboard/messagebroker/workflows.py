@@ -18,7 +18,6 @@ import logging
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.forms import ValidationError
-from django.utils.translation import ugettext_lazy as _
 from horizon import exceptions
 from horizon import forms
 from horizon.utils import memoized
@@ -38,12 +37,12 @@ LOG = logging.getLogger(__name__)
 
 class PasswordMixin(forms.SelfHandlingForm):
     password = forms.RegexField(
-        label=_("Password"),
+        label="Password",
         widget=forms.PasswordInput(render_value=False),
         regex=validators.password_validator(),
         error_messages={'invalid': validators.password_validator_msg()})
     confirm_password = forms.CharField(
-        label=_("Confirm Password"),
+        label="Confirm Password",
         widget=forms.PasswordInput(render_value=False))
     no_autocomplete = True
 
@@ -52,33 +51,33 @@ class PasswordMixin(forms.SelfHandlingForm):
         data = super(forms.Form, self).clean()
         if 'password' in data:
             if data['password'] != data.get('confirm_password', None):
-                raise ValidationError(_('Passwords do not match.'))
+                raise ValidationError('Passwords do not match.')
         return data
 
 
 class SetInstanceDetailsAction(workflows.Action):
-    name = forms.CharField(max_length=80, label=_("Cluster Name"))
-    flavor = forms.ChoiceField(label=_("Flavor"),
-                               help_text=_("The amount of RAM and CPU included"
-                                           " in each node of the cluster."))
-    size = forms.IntegerField(label=_("Cluster Size"),
+    name = forms.CharField(max_length=80, label="Cluster Name")
+    flavor = forms.ChoiceField(label="Flavor",
+                               help_text="The amount of RAM and CPU included"
+                                         " in each node of the cluster.")
+    size = forms.IntegerField(label="Cluster Size",
                               min_value=1,
                               initial=1,
-                              help_text=_("The number of nodes that make up "
-                                          "the cluster."))
-    network = forms.ChoiceField(label=_("Network"),
-                                help_text=_("Network to attach to the "
-                                            "cluster."))
-    username = forms.CharField(max_length=80, label=_("User Name"),
-                               help_text=_("User name for logging into the "
-                                           "RabbitMQ Management UI."))
+                              help_text="The number of nodes that make up "
+                                        "the cluster.")
+    network = forms.ChoiceField(label="Network",
+                                help_text="Network to attach to the "
+                                          "cluster.")
+    username = forms.CharField(max_length=80, label="User Name",
+                               help_text="User name for logging into the "
+                                         "RabbitMQ Management UI.")
     password = forms.RegexField(
-        label=_("Password"),
+        label="Password",
         widget=forms.PasswordInput(render_value=False),
         regex=validators.password_validator(),
         error_messages={'invalid': validators.password_validator_msg()})
     confirm_password = forms.CharField(
-        label=_("Confirm Password"),
+        label="Confirm Password",
         widget=forms.PasswordInput(render_value=False))
 
     def clean(self):
@@ -86,11 +85,11 @@ class SetInstanceDetailsAction(workflows.Action):
         data = super(forms.Form, self).clean()
         if 'password' in data:
             if data['password'] != data.get('confirm_password', None):
-                raise ValidationError(_('Passwords do not match.'))
+                raise ValidationError('Passwords do not match.')
         return data
 
     class Meta(object):
-        name = _("Details")
+        name = "Details"
         help_text_template = "messagebroker/_launch_details_help.html"
 
     @memoized.memoized_method
@@ -101,7 +100,7 @@ class SetInstanceDetailsAction(workflows.Action):
             LOG.exception("Exception while obtaining flavors list")
             redirect = reverse("horizon:project:messagebroker:index")
             exceptions.handle(request,
-                              _('Unable to obtain flavors.'),
+                              'Unable to obtain flavors.',
                               redirect=redirect)
 
     def populate_flavor_choices(self, request, context):
@@ -120,7 +119,7 @@ class SetInstanceDetailsAction(workflows.Action):
         except Exception:
             network_list = []
             exceptions.handle(request,
-                              _('Unable to retrieve networks.'))
+                              'Unable to retrieve networks.')
         return network_list
 
     def populate_network_choices(self, request, context):
@@ -135,7 +134,7 @@ class SetInstanceDetailsAction(workflows.Action):
 
         except Exception:
             exceptions.handle(self.request,
-                              _("Unable to retrieve quota information."))
+                              "Unable to retrieve quota information.")
         return super(SetInstanceDetailsAction, self).get_help_text(extra)
 
 
@@ -146,10 +145,10 @@ class SetClusterDetails(workflows.Step):
 
 class CreateCluster(workflows.Workflow):
     slug = "create_cluster"
-    name = _("Create Cluster")
-    finalize_button_name = _("Create")
-    success_message = _('Created cluster named "%(name)s".')
-    failure_message = _('Unable to create cluster named "%(name)s".')
+    name = "Create Cluster"
+    finalize_button_name = "Create"
+    success_message = 'Created cluster named "%(name)s".'
+    failure_message = 'Unable to create cluster named "%(name)s".'
     success_url = "horizon:project:messagebroker:index"
     default_steps = (SetClusterDetails,)
 
