@@ -10,6 +10,8 @@
     <dd>{{ cluster.id|default:_("None") }}</dd>
     <dt>{% trans "Status" %}</dt>
     <dd>{{ cluster.status|default:_("-") }}</dd>
+    <dt>{% trans "Error Detail" %}</dt>
+    <dd>{{ cluster.error_detail|default:_("-") }}</dd>
     <dt>{% trans "Network" %}</dt>
     <dd>{{ cluster.network_id|default:_("-") }}</dd>
     <dt>{% trans "Flavor" %}</dt>
